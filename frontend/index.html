@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SecureScan | Website Security Assessment</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous" />
+    <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+    <div class="app-shell min-vh-100 text-light">
+        <header class="app-header py-3">
+            <div class="container d-flex align-items-center justify-content-between">
+                <div class="brand d-flex align-items-center gap-3">
+                    <div class="logo-circle">SS</div>
+                    <div>
+                        <h1 class="site-title mb-0">SecureScan</h1>
+                        <p class="site-tag mb-0">Website Security Assessment Platform</p>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <main class="container pb-5">
+            <section class="hero-section pt-4 pb-3 mb-3">
+                <div class="hero-content text-center mx-auto reveal">
+                    <p class="hero-badge mb-3">Network Reconnaissance &amp; Exposure Analysis</p>
+                    <h2 class="hero-title">Website Security Assessment</h2>
+                    <p class="hero-subtitle mx-auto">Perform automated network security assessment of publicly accessible web targets to identify exposed services, active ports, operating system fingerprints, and potential exposure risks.</p>
+                </div>
+            </section>
+
+            <section class="scan-section mb-4">
+                <div class="row gx-4 gy-4 justify-content-center">
+                    <div class="col-12 col-xl-8">
+                        <div class="card scan-card shadow-soft reveal" data-reveal-delay="100">
+                            <div class="card-body">
+                                <div class="section-header mb-4">
+                                    <p class="section-label">ASSESSMENT TARGET &amp; PROFILE</p>
+                                    <h3 class="section-title">Initiate Network Reconnaissance</h3>
+                                    <p class="section-description">Select a scan profile and enter the target website URL to execute a non-intrusive network exposure analysis powered by Nmap.</p>
+                                </div>
+
+                                <div class="mb-4">
+                                    <label for="urlInput" class="form-label text-muted mb-2">Website URL</label>
+                                    <div class="input-group input-glow">
+                                        <span class="input-icon" aria-hidden="true">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15.3 15.3 0 0 1 4 9.5c0 3-1 5.77-2.67 7.82"/><path d="M12 2a15.3 15.3 0 0 0-4 9.5C8 14.5 9 17.27 10.67 19.32"/></svg>
+                                        </span>
+                                        <input type="url" id="urlInput" class="form-control form-control-dark form-control-lg" placeholder="https://example.com" value="https://example.com" />
+                                    </div>
+                                </div>
+
+                                <div class="mb-4">
+                                    <label for="scanProfileSelect" class="form-label text-muted mb-2">Scan Type</label>
+                                    <div class="select-glow">
+                                        <select id="scanProfileSelect" class="form-select form-select-dark form-select-lg">
+                                            <option value="QUICK" selected>Quick Scan — Recommended</option>
+                                            <option value="DETAILED">Detailed Scan</option>
+                                            <option value="FULL">Full Port Scan</option>
+                                            <option value="OS">OS Detection</option>
+                                            <option value="AGGRESSIVE">Aggressive Scan</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div id="profileNotice" class="profile-notice mb-4 d-none">
+                                    <!-- Dynamic warning info box populated via JS -->
+                                </div>
+
+                                <button id="scanButton" type="button" class="btn btn-primary btn-xl w-100 mb-3" aria-label="Start website security assessment">
+                                    <span class="button-icon" aria-hidden="true">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+                                    </span>
+                                    <span id="scanButtonText">Analyze Website</span>
+                                    <span id="scanSpinner" class="spinner-border spinner-border-sm ms-2 d-none" role="status" aria-hidden="true"></span>
+                                </button>
+
+                                <div id="loadingStatus" class="loading-status mb-2 text-center" role="status" aria-live="polite"></div>
+                                <div id="feedback" class="feedback-area"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="results-section">
+                <div class="row gx-4 gy-4 justify-content-center">
+                    <div class="col-12 col-xl-10">
+                        <div id="resultCard" class="card result-card shadow-soft d-none reveal" data-reveal-delay="200">
+                            <div class="card-body">
+                                <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-4 pb-3 border-bottom border-secondary border-opacity-25">
+                                    <div>
+                                        <p class="section-label mb-1">SECURITY ASSESSMENT REPORT</p>
+                                        <h3 class="section-title mb-0">Assessment Results &amp; Findings</h3>
+                                    </div>
+                                    <div id="overallRiskBadge"></div>
+                                </div>
+
+                                <!-- Executive Summary Panel -->
+                                <div id="resultSummary" class="result-summary mb-4"></div>
+
+                                <!-- Metadata Grid -->
+                                <div id="hostDetails" class="metadata-grid mb-4"></div>
+
+                                <!-- Open Ports Table / Exposure Section -->
+                                <div id="openPortsSection" class="open-ports-section mb-4"></div>
+
+                                <!-- Recommendations Section -->
+                                <div id="recommendationsSection" class="recommendations-section"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
