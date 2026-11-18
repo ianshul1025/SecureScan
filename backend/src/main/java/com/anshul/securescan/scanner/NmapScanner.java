@@ -101,7 +101,11 @@ public class NmapScanner {
             String stderrOutput = stderrStream.toString(StandardCharsets.UTF_8).trim();
 
             if (!stderrOutput.isBlank()) {
-                logger.debug("Nmap stderr diagnostic output for {}: {}", targetHost, stderrOutput);
+                if (exitCode != 0) {
+                    logger.warn("Nmap stderr for {} (exit {}): {}", targetHost, exitCode, stderrOutput);
+                } else {
+                    logger.debug("Nmap stderr diagnostic output for {}: {}", targetHost, stderrOutput);
+                }
             }
 
             NmapParser parser = new NmapParser();
@@ -157,6 +161,9 @@ public class NmapScanner {
         String nmapExec = resolveNmapExecutable();
         List<String> command = new ArrayList<>();
         command.add(nmapExec);
+        // Docker/cloud hosts (e.g. Render) lack CAP_NET_RAW — SYN scan exits 1; connect scan works unprivileged.
+        command.add("--unprivileged");
+        command.add("-sT");
         command.addAll(profile.getNmapArguments());
         command.add(targetHost);
         return command;
